@@ -31,10 +31,10 @@ do ponownego wygenerowania grafik.
    (Arduino wymaga, by nazwa katalogu była identyczna z nazwą pliku `Radio_Wilma.ino`, łącznie
    z wielkością liter):
    ```
-   git clone https://github.com/<TWOJA_NAZWA_GITHUB>/Radio-Wilma-ESP32-S3.git
+   git clone https://github.com/sirwilliams77/Radio-Wilma-ESP32-S3.git
    ```
-   Przy pobieraniu jako ZIP (*Code → Download ZIP*) katalog nazywa się `Radio_Wilma-main` –
-   zmień jego nazwę na `Radio_Wilma`.
+   Przy pobieraniu jako ZIP (*Code → Download ZIP*) GitHub tworzy katalog `Radio-Wilma-ESP32-S3-main` –
+   zmień jego nazwę na `Radio_Wilma`, aby Arduino IDE poprawnie rozpoznało szkic.
 1. Płytka: **esp32** by Espressif, wersja 3.x → **ESP32S3 Dev Module**.
    Flash Size **16MB**, Flash Mode **QIO 80MHz**, PSRAM **OPI PSRAM**,
    Partition Scheme **16M Flash (3MB APP/9.9MB FATFS)** (partycja na stacje/logo + dwie partycje
@@ -43,7 +43,7 @@ do ponownego wygenerowania grafik.
    (schreibfaul1). Pozostałe (WebServer, DNSServer, ESPmDNS, FFat, LittleFS, Preferences, Update,
    HTTPClient) są w pakiecie płytki ESP32.
 3. Opcjonalnie skopiuj `secrets.example.h` jako `secrets.h` i wpisz sieć Wi-Fi na pierwszy start.
-   Bez tego pliku radio uruchomi punkt dostępowy **Radio-Wilma** (hasło `radio1234`). Ekran radia pokaże wtedy instrukcję:
+   Bez tego pliku radio uruchomi punkt dostępowy **Radio-Wilma** (domyślne hasło `radio1234`). To hasło jest publiczne i służy wyłącznie do konfiguracji pierwszego uruchomienia; po skonfigurowaniu Wi-Fi wyłącz punkt dostępowy lub zmień hasło w kodzie przed użyciem w miejscu publicznym. Ekran radia pokaże wtedy instrukcję:
    połącz się z tą siecią, otwórz `http://192.168.4.1` i w Ustawieniach > Wi-Fi wybierz swoją sieć.
 4. Wgraj szkic. Monitor portu: 115200 bodów.
 
