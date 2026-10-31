@@ -7,6 +7,7 @@
 
 #include "RadioUi.h"
 #include "StationStore.h"  // jsonEscape
+#include "TlsTrust.h"
 
 static const uint32_t REFRESH_MS = 15UL * 60UL * 1000UL;
 static const uint32_t RETRY_MS = 2UL * 60UL * 1000UL;
@@ -46,7 +47,7 @@ static String urlEncode(const char *text) {
 
 static bool httpGet(const String &url, String &body, String &error) {
   WiFiClientSecure client;
-  client.setInsecure();  // public weather data; certificate is not verified
+  tlsUseTrustedRoots(client);  // server certificate verified (built-in root CA bundle)
   HTTPClient http;
   http.setConnectTimeout(HTTP_TIMEOUT_MS);
   http.setTimeout(HTTP_TIMEOUT_MS);
@@ -55,6 +56,13 @@ static bool httpGet(const String &url, String &body, String &error) {
     return false;
   }
   const int code = http.GET();
+  if (code < 0) tlsLogError(client, "Weather");
+  String tlsError;
+  if (code == 200 && !tlsCertificateDatesOk(client, "Weather", tlsError)) {
+    error = "Open-Meteo: " + tlsError;  // answer discarded
+    http.end();
+    return false;
+  }
   if (code == 200) body = http.getString();
   else error = "Open-Meteo: błąd HTTP " + String(code);
   http.end();

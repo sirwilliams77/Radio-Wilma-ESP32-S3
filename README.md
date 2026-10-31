@@ -1,4 +1,4 @@
-# Radio Wilma – radio internetowe na ESP32-S3
+# Radio Wilma – radio internetowe na ESP32-S3 (wersja 1.0.0)
 
 Radio internetowe na ESP32-S3 WROOM N16R8 z wyświetlaczem ST7796 (480×320, SPI), przetwornikiem
 PCM5102A (I2S) i dwoma enkoderami. Sterowanie także z przeglądarki: **http://radio.local**.
@@ -13,6 +13,7 @@ PCM5102A (I2S) i dwoma enkoderami. Sterowanie także z przeglądarki: **http://r
 | `StationStore.h/.cpp` | Lista stacji i logo w pamięci flash (JSON + RGB565) |
 | `Weather.h/.cpp` | Pogoda z Open-Meteo (osobne zadanie, co 15 min) |
 | `StationSearch.h/.cpp` | Wyszukiwanie stacji w radio-browser.info (osobne zadanie) |
+| `TlsTrust.h` | Weryfikacja certyfikatów HTTPS (pogoda, wyszukiwarka stacji) |
 | `RadioApi.h` | Funkcje radia używane przez panel |
 | `UiTypes.h` | Struktury czcionek/ikon, rozmiary logo |
 | `UiFonts.h`, `UiIcons.h`, `UiImages.h`, `UiWeather.h`, `WebLogo.h`, `StationLogos.h` | **Wygenerowane** grafiki (nie edytować ręcznie) |
@@ -33,8 +34,8 @@ do ponownego wygenerowania grafik.
    ```
    git clone https://github.com/sirwilliams77/Radio-Wilma-ESP32-S3.git
    ```
-   Przy pobieraniu jako ZIP (*Code → Download ZIP*) GitHub tworzy katalog `Radio-Wilma-ESP32-S3-main` –
-   zmień jego nazwę na `Radio_Wilma`, aby Arduino IDE poprawnie rozpoznało szkic.
+   Przy pobieraniu jako ZIP (*Code → Download ZIP*) katalog nazywa się `Radio_Wilma-main` –
+   zmień jego nazwę na `Radio_Wilma`.
 1. Płytka: **esp32** by Espressif, wersja 3.x → **ESP32S3 Dev Module**.
    Flash Size **16MB**, Flash Mode **QIO 80MHz**, PSRAM **OPI PSRAM**,
    Partition Scheme **16M Flash (3MB APP/9.9MB FATFS)** (partycja na stacje/logo + dwie partycje
@@ -43,7 +44,7 @@ do ponownego wygenerowania grafik.
    (schreibfaul1). Pozostałe (WebServer, DNSServer, ESPmDNS, FFat, LittleFS, Preferences, Update,
    HTTPClient) są w pakiecie płytki ESP32.
 3. Opcjonalnie skopiuj `secrets.example.h` jako `secrets.h` i wpisz sieć Wi-Fi na pierwszy start.
-   Bez tego pliku radio uruchomi punkt dostępowy **Radio-Wilma** (domyślne hasło `radio1234`). To hasło jest publiczne i służy wyłącznie do konfiguracji pierwszego uruchomienia; po skonfigurowaniu Wi-Fi wyłącz punkt dostępowy lub zmień hasło w kodzie przed użyciem w miejscu publicznym. Ekran radia pokaże wtedy instrukcję:
+   Bez tego pliku radio uruchomi punkt dostępowy **Radio-Wilma** (hasło `radio1234`). Ekran radia pokaże wtedy instrukcję:
    połącz się z tą siecią, otwórz `http://192.168.4.1` i w Ustawieniach > Wi-Fi wybierz swoją sieć.
 4. Wgraj szkic. Monitor portu: 115200 bodów.
 
@@ -138,6 +139,18 @@ Enkoder 1: tylko głośność (obrót). Enkoder 2: tylko zmiana stacji (obrót).
 Obrót enkodera głośności otwiera ekran głośności (duża cyfra i skala), a obrót enkodera
 stacji — listę stacji z podświetloną pozycją. Stacja zaczyna
 grać, gdy pokrętło zatrzyma się na 0,25 s. Po 2 s bez ruchu wraca ekran główny.
+
+## Bezpieczeństwo połączeń (HTTPS)
+
+Pogoda (`api.open-meteo.com`, `geocoding-api.open-meteo.com`) i wyszukiwarka stacji
+(`*.api.radio-browser.info`) łączą się przez HTTPS z weryfikacją certyfikatu serwera
+(`TlsTrust.h`): łańcuch sprawdzany jest wbudowanym w ESP32 Arduino Core 3.x pakietem
+głównych urzędów certyfikacji (Mozilla), nazwa serwera przez mbedTLS, a daty ważności
+certyfikatu – według zegara z NTP. Certyfikaty nie są przypinane, więc nic nie trzeba
+ręcznie wymieniać; pakiet aktualizuje się razem z wersją pakietu płytki ESP32.
+
+Strumienie audio obsługuje biblioteka ESP32-audioI2S; w wersji 4.0.x przy Core 3.x nie
+weryfikuje ona certyfikatów stacji (`setInsecure()` wewnątrz biblioteki).
 
 ## Licencja
 

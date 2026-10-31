@@ -1,0 +1,19 @@
+# Prywatne dane (Wi-Fi) - nie publikować
+secrets.h
+
+# Python
+__pycache__/
+*.pyc
+
+# Pliki kompilacji
+*.bin
+*.elf
+*.map
+build/
+
+# Edytory i system
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini

@@ -1,0 +1,12 @@
+* text=auto eol=lf
+*.png binary
+*.jpg binary
+*.ttf binary
+
+# Wygenerowane przez tools/make_ui_assets.py - ukryte w statystykach i diffach GitHuba
+UiFonts.h linguist-generated=true
+UiIcons.h linguist-generated=true
+UiImages.h linguist-generated=true
+UiWeather.h linguist-generated=true
+WebLogo.h linguist-generated=true
+StationLogos.h linguist-generated=true

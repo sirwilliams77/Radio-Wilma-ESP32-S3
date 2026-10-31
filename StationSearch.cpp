@@ -5,6 +5,7 @@
 #include <WiFiClientSecure.h>
 
 #include "StationStore.h"  // jsonEscape, STATION_URL_MAX
+#include "TlsTrust.h"
 
 // radio-browser.info: "all" resolves to one of the community servers; the others are fallbacks.
 static const char *const SEARCH_SERVERS[] = {"all.api.radio-browser.info", "de1.api.radio-browser.info",
@@ -300,13 +301,19 @@ static void searchTask(void *) {
       break;
     }
     WiFiClientSecure client;
-    client.setInsecure();  // public directory data; the certificate is not verified
+    tlsUseTrustedRoots(client);  // server certificate verified (built-in root CA bundle)
     HTTPClient http;
     http.setConnectTimeout(SEARCH_TIMEOUT_MS);
     http.setTimeout(SEARCH_TIMEOUT_MS);
     http.setUserAgent("RadioWilma/1.0 (ESP32-S3)");
     if (!http.begin(client, String("https://") + server + path)) continue;
     const int code = http.GET();
+    if (code < 0) tlsLogError(client, "Station search");
+    String tlsError;
+    if (code == 200 && !tlsCertificateDatesOk(client, "Station search", tlsError)) {
+      http.end();  // answer discarded, next server
+      continue;
+    }
     if (code == 200) {
       BufferSink sink(buffer, RESPONSE_MAX);
       const int written = http.writeToStream(&sink);
