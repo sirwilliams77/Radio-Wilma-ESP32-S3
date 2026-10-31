@@ -1,4 +1,4 @@
-# Radio Wilma – radio internetowe na ESP32-S3 (wersja 5.0)
+# Radio Wilma – radio internetowe na ESP32-S3
 
 Radio internetowe na ESP32-S3 WROOM N16R8 z wyświetlaczem ST7796 (480×320, SPI), przetwornikiem
 PCM5102A (I2S) i dwoma enkoderami. Sterowanie także z przeglądarki: **http://radio.local**.
