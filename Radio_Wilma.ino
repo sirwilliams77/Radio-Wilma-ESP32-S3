@@ -21,7 +21,7 @@
 #include "WebPanel.h"
 #include "Weather.h"
 
-static const char *FIRMWARE_VERSION = "1.0";
+static const char *FIRMWARE_VERSION = "1.0.1";
 
 // ESP32-S3 WROOM N16R8 + ST7796. Display wiring is unchanged from stage 2.
 #define TFT_SCK 12
